@@ -53,22 +53,24 @@ export const searchService = {
 
     const normalisedQuery = normaliseQuery(trimmed);
     const normalisedArabicQuery = normaliseArabic(trimmed);
-    const isArabic = /[\u0600-\u06FF]/.test(trimmed);
 
     const allAyahs: Ayah[] = getAllAyahs();
+    logger.debug(`Searching through ${allAyahs.length} ayahs`);
     const results: SearchResult[] = [];
 
     for (const ayah of allAyahs) {
-      if (isArabic) {
-        // Arabic search: strip diacritics from both sides
-        if (normaliseArabic(ayah.text).includes(normalisedArabicQuery)) {
-          results.push({ ayah, matchType: 'arabic' });
-        }
-      } else {
-        // English search (case-insensitive)
-        if (ayah.translation.toLowerCase().includes(normalisedQuery)) {
-          results.push({ ayah, matchType: 'translation' });
-        }
+      const matchInArabic = normaliseArabic(ayah.text).includes(normalisedArabicQuery);
+      const matchInTranslation = ayah.translation.toLowerCase().includes(normalisedQuery);
+      const matchInBangla = ayah.banglaTranslation?.toLowerCase().includes(normalisedQuery);
+      
+      // Also check Surah names
+      const matchInSurahName = ayah.surahName.toLowerCase().includes(normalisedQuery);
+      const matchInSurahNameArabic = normaliseArabic(ayah.surahNameArabic || '').includes(normalisedArabicQuery);
+
+      if (matchInArabic || matchInSurahNameArabic) {
+        results.push({ ayah, matchType: 'arabic' });
+      } else if (matchInTranslation || matchInBangla || matchInSurahName) {
+        results.push({ ayah, matchType: 'translation' });
       }
     }
 
