@@ -45,7 +45,8 @@ export const audioController = {
         return;
       }
 
-      sendSuccess(res, audio, 'Audio URL generated');
+      // Redirect directly to the CDN URL so it can be used in <audio src="...">
+      res.redirect(audio.url);
     } catch (err) {
       logger.error('getAyahAudio error', err);
       sendError(res, 'Failed to generate audio URL');
