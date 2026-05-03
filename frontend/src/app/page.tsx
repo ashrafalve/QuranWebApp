@@ -92,7 +92,7 @@ export default async function Home() {
 
                 <div className="relative z-10 flex-1 min-w-0">
                   <h3 className="font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                    {surah.englishName}
+                    {surah.englishName.replace(/-/g, ' ')}
                   </h3>
                   <p className="text-[10px] text-muted font-bold uppercase tracking-wider mt-1 truncate">
                     {surah.englishNameTranslation}

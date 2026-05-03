@@ -61,12 +61,12 @@ export default async function SurahPage({ params }: PageProps) {
         <div className="relative z-10">
           <div className="text-center space-y-4">
             <h1 className="text-5xl font-bold text-foreground tracking-tight drop-shadow-sm">
-              Surah {surah.englishName}
+              Surah {surah.englishName.replace(/-/g, ' ')}
             </h1>
             <div className="flex items-center justify-center gap-6 text-muted font-bold text-sm uppercase tracking-[0.3em]">
-              <span>{surah.revelationType}</span>
+              <span>Ayah-{surah.numberOfAyahs}</span>
               <span className="w-1.5 h-1.5 bg-primary rounded-full" />
-              <span>{surah.numberOfAyahs} Ayahs</span>
+              <span>{surah.revelationType === 'Meccan' ? 'Makkah' : 'Madinah'}</span>
             </div>
           </div>
 

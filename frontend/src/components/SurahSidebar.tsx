@@ -92,8 +92,8 @@ export default function SurahSidebar() {
         isSurahSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         isHomePage ? "lg:hidden" : "lg:flex" // Hide on desktop home page
       )} suppressHydrationWarning>
-        {/* Header */}
-        <div className="p-6 flex items-center justify-between" suppressHydrationWarning>
+        {/* Header - Mobile Only */}
+        <div className="p-6 flex items-center justify-between lg:hidden" suppressHydrationWarning>
           <div className="flex items-center gap-3">
              <div className="bg-primary p-2 rounded-xl">
                <BookOpen className="w-5 h-5 text-white" />
@@ -103,7 +103,7 @@ export default function SurahSidebar() {
           
           <button 
             onClick={() => setSurahSidebarOpen(false)}
-            className="lg:hidden p-2 hover:bg-card rounded-xl transition-colors"
+            className="p-2 hover:bg-card rounded-xl transition-colors"
           >
             <X className="w-5 h-5 text-muted" />
           </button>
@@ -221,7 +221,7 @@ export default function SurahSidebar() {
                   <h4 className={cn(
                     "font-bold text-sm truncate",
                     pathname === `/surah/${surah.id}` ? "text-primary" : "text-foreground"
-                  )}>{surah.englishName}</h4>
+                  )}>{surah.englishName.replace(/-/g, ' ')}</h4>
                   <p className="text-[10px] text-muted font-bold uppercase tracking-wider mt-1 truncate">{surah.englishNameTranslation}</p>
                 </div>
                 <div className="text-right">

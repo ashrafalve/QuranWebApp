@@ -68,16 +68,18 @@ export default function Header() {
           <Menu className="w-6 h-6 text-muted" />
         </button>
         <Link href="/" className="flex items-center gap-3">
-          <div className="bg-primary p-2 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center overflow-hidden w-10 h-10">
-            <Image
-              src="/quranlogo.png"
-              alt="Logo"
-              width={28}
-              height={28}
-              className="object-contain grayscale brightness-0 invert"
-              priority
-            />
-          </div>
+          {isHomePage && (
+            <div className="bg-primary p-2 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center overflow-hidden w-10 h-10">
+              <Image
+                src="/quranlogo.png"
+                alt="Logo"
+                width={28}
+                height={28}
+                className="object-contain grayscale brightness-0 invert"
+                priority
+              />
+            </div>
+          )}
           <div>
             <h1 className="font-bold text-base text-foreground leading-none">QURAN MAZID</h1>
             <p className="text-[9px] text-muted font-bold uppercase mt-0.5 tracking-widest hidden xl:block">Read, Study, and Learn The Quran</p>
