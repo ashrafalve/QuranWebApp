@@ -99,7 +99,7 @@ export default function SurahSidebar() {
       )}
 
       <div className={cn(
-        "fixed inset-y-0 left-0 lg:static z-[100] w-[320px] h-full bg-background border-r border-border flex flex-col transition-all duration-300 transform",
+        "fixed inset-y-0 left-0 lg:static z-[100] w-[320px] h-full bg-background border-r border-border flex flex-col transition-all duration-300 transform overflow-y-auto lg:overflow-hidden",
         isSurahSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         isHomePage ? "lg:hidden" : "lg:flex" // Hide on desktop home page
       )} suppressHydrationWarning>
@@ -207,7 +207,7 @@ export default function SurahSidebar() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-3 pb-[80px] space-y-1.5 custom-scrollbar" suppressHydrationWarning>
+        <div className="flex-1 lg:overflow-y-auto px-3 pb-[80px] space-y-1.5 custom-scrollbar" suppressHydrationWarning>
           {loading ? (
             Array.from({ length: 15 }).map((_, i) => (
               <div key={i} className="h-16 animate-pulse bg-card rounded-xl" />

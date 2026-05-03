@@ -1,8 +1,8 @@
 import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs, PaginatedSearchResult } from '@/types';
 
-// Use relative URL for deployment flexibility (works with same-domain proxy or CORS)
-// Override with NEXT_PUBLIC_API_URL for separate backend deployments
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+// For Server Components in Next.js, absolute URLs are required.
+// Locally, this defaults to the backend port. In production, NEXT_PUBLIC_API_URL must be set in Vercel.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
 
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url, {
