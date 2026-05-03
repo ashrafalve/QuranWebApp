@@ -16,6 +16,8 @@ interface AppState {
   // Sidebar State
   isSurahSidebarOpen: boolean;
   setSurahSidebarOpen: (open: boolean) => void;
+  isFontSettingsOpen: boolean;
+  setFontSettingsOpen: (open: boolean) => void;
 
   // View Mode
   readingMode: boolean;
@@ -40,6 +42,8 @@ export const useAppStore = create<AppState>()(
 
       isSurahSidebarOpen: true,
       setSurahSidebarOpen: (open) => set({ isSurahSidebarOpen: open }),
+      isFontSettingsOpen: false,
+      setFontSettingsOpen: (open) => set({ isFontSettingsOpen: open }),
 
       readingMode: false,
       setReadingMode: (mode) => set({ readingMode: mode }),

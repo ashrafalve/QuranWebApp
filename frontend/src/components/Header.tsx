@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Sun, Moon, Menu, Heart, Monitor, Sunset, X } from 'lucide-react';
+import { Search, Sun, Moon, Menu, Heart, Monitor, Sunset, X, Settings } from 'lucide-react';
 import { useTheme } from '@/components/Providers';
 import { useEffect, useState, useRef } from 'react';
 import { useAppStore } from '@/store/useAppStore';
@@ -15,7 +15,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const { setSurahSidebarOpen } = useAppStore();
+  const { setSurahSidebarOpen, setFontSettingsOpen } = useAppStore();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -161,7 +161,7 @@ export default function Header() {
             </button>
           )}
         </div>
-        
+
         {/* Theme Dropdown */}
         <div className="relative" ref={dropdownRef}>
           {mounted && (
@@ -206,6 +206,14 @@ export default function Header() {
         <button className="bg-primary hover:opacity-90 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 shadow-lg shadow-primary/10">
           <span className="hidden sm:inline">Support Us</span>
           <Heart className="w-4 h-4 fill-white" />
+        </button>
+
+        {/* Settings Toggle (Mobile Only) */}
+        <button
+          onClick={() => setFontSettingsOpen(true)}
+          className="xl:hidden p-2.5 rounded-full bg-card hover:bg-border/50 text-muted transition-colors"
+        >
+          <Settings className="w-5 h-5" />
         </button>
       </div>
     </header>

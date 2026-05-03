@@ -1,14 +1,43 @@
 'use client';
 
-import { BookOpen, Type, ChevronRight } from 'lucide-react';
+import { BookOpen, Type, ChevronRight, Settings, X } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { cn } from '@/utils/cn';
 
 export default function FontSettings() {
-  const { settings, setSettings, readingMode, setReadingMode } = useAppStore();
+  const { settings, setSettings, readingMode, setReadingMode, isFontSettingsOpen, setFontSettingsOpen } = useAppStore();
 
   return (
-    <div className="w-[320px] h-full bg-background border-l border-border flex flex-col hidden xl:flex transition-colors duration-300">
+    <>
+      {/* Mobile Overlay */}
+      {isFontSettingsOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-[90] xl:hidden animate-in fade-in duration-300"
+          onClick={() => setFontSettingsOpen(false)}
+        />
+      )}
+
+      <div className={cn(
+        "fixed inset-y-0 right-0 xl:static z-[100] w-[320px] h-full bg-background border-l border-border flex flex-col transition-all duration-300 transform",
+        isFontSettingsOpen ? "translate-x-0" : "translate-x-full xl:translate-x-0",
+        "flex" // Always flex, but the translate-x handles visibility
+      )}>
+        {/* Header - Mobile Only */}
+        <div className="p-6 flex items-center justify-between xl:hidden">
+          <div className="flex items-center gap-3">
+             <div className="bg-primary p-2 rounded-xl">
+               <Settings className="w-5 h-5 text-white" />
+             </div>
+             <h2 className="font-bold text-lg text-foreground">Settings</h2>
+          </div>
+          
+          <button 
+            onClick={() => setFontSettingsOpen(false)}
+            className="p-2 hover:bg-card rounded-xl transition-colors"
+          >
+            <X className="w-5 h-5 text-muted" />
+          </button>
+        </div>
       {/* Tabs */}
       <div className="p-6">
         <div className="bg-card rounded-2xl p-1 flex">
@@ -103,5 +132,6 @@ export default function FontSettings() {
         )}
       </div>
     </div>
-  );
+  </>
+);
 }
