@@ -15,27 +15,27 @@ export default async function Home() {
         <div className="relative overflow-hidden bg-card rounded-[40px] border border-border flex flex-col items-center text-center space-y-8 py-16 px-6">
           {/* Background Watermark */}
           <div className="absolute left-0 top-0 w-1/3 h-full opacity-5 pointer-events-none">
-             <Image 
-              src="/makkahicon.png" 
-              alt="Makkah" 
-              fill 
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-contain p-12 -translate-x-1/4" 
-              style={{ objectFit: 'contain' }}
-            />
+              <Image 
+               src="/makkahiconimage.png" 
+               alt="Makkah" 
+               fill 
+               sizes="(max-width: 768px) 100vw, 33vw"
+               className="object-contain p-12 -translate-x-1/4 w-auto h-auto" 
+               priority
+             />
           </div>
           
-          <div className="relative z-10 flex flex-col items-center gap-4">
-             <div className="bg-primary p-5 rounded-3xl shadow-2xl shadow-primary/20 mb-6 flex items-center justify-center overflow-hidden w-24 h-24">
-                <Image 
-                  src="/quran.png" 
-                  alt="Quran Logo" 
-                  width={80} 
-                  height={80} 
-                  className="object-contain brightness-0 invert" 
-                  priority
-                />
-             </div>
+              <div className="relative z-10 flex flex-col items-center gap-4">
+                 <div className="bg-primary p-5 rounded-3xl shadow-2xl shadow-primary/20 mb-6 flex items-center justify-center overflow-hidden w-24 h-24">
+                    <Image 
+                      src="/quranlogo.png" 
+                      alt="Quran Logo" 
+                      width={80} 
+                      height={80} 
+                      className="object-contain grayscale brightness-0 dark:invert"
+                      priority
+                    />
+                 </div>
              <h1 className="font-amiri text-6xl md:text-8xl font-bold text-foreground tracking-tight drop-shadow-2xl">
                QURAN <span className="text-primary">MAZID</span>
              </h1>

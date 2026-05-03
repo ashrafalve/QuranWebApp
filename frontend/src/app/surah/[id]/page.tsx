@@ -13,34 +13,36 @@ export default async function SurahPage({ params }: PageProps) {
   const surah: SurahWithAyahs = await fetchSurahById(surahId);
 
   return (
-    <div className="w-full h-full bg-background overflow-y-auto transition-colors duration-300">
-      <div className="max-w-4xl mx-auto py-8 px-4 md:px-8 pb-32">
-        {/* Surah Header Card */}
-        <div className="relative mb-16 text-center py-12 px-6 bg-card rounded-[32px] border border-border shadow-sm overflow-hidden group">
-          {/* Watermark Illustration */}
-          <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none group-hover:scale-105 transition-transform duration-1000 ease-out">
-            <Image 
-              src="/makkahicon.png" 
-              alt="Makkah" 
-              width={160} 
-              height={160} 
-              priority 
-              className="object-contain"
-              style={{ height: 'auto' }}
-            />
-          </div>
-
-          <div className="relative z-10 space-y-4">
-            <h1 className="text-4xl font-bold text-foreground tracking-tight">Surah {surah.englishName}</h1>
-            <p className="text-muted font-bold text-sm uppercase tracking-widest">
-              Ayah-{surah.numberOfAyahs}, {surah.revelationType}
-            </p>
-          </div>
-
-          {/* Subtle Decorative Gradient */}
-          <div className="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-full" />
+    <div className="w-full bg-background transition-colors duration-300">
+      {/* Surah Header - Attached to Top, Full Width */}
+      <div className="relative w-full text-center py-16 px-6 bg-background overflow-hidden group">
+        {/* Watermark Illustration */}
+        <div className="absolute left-10 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none group-hover:scale-105 transition-transform duration-1000 ease-out">
+          <Image 
+            src="/makkahiconimage.png" 
+            alt="Makkah" 
+            width={200} 
+            height={200} 
+            priority 
+            className="object-contain w-auto h-auto"
+          />
         </div>
 
+        <div className="relative z-10 space-y-3">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight drop-shadow-sm">Surah {surah.englishName}</h1>
+          <div className="flex items-center justify-center gap-4 text-muted font-bold text-xs uppercase tracking-[0.3em]">
+            <span>{surah.revelationType}</span>
+            <span className="w-1 h-1 bg-primary rounded-full" />
+            <span>{surah.numberOfAyahs} Ayahs</span>
+          </div>
+        </div>
+
+        {/* Subtle Decorative Gradient */}
+        <div className="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-primary/5 to-transparent" />
+      </div>
+
+      {/* Reader Content */}
+      <div className="max-w-4xl mx-auto px-4 md:px-8 pb-32">
         {/* Bismillah (Except Surah 1 and 9) */}
         {surahId !== 1 && surahId !== 9 && (
           <div className="text-center py-20 border-b border-border">
@@ -60,7 +62,7 @@ export default async function SurahPage({ params }: PageProps) {
         </div>
 
         {/* Navigation Footer */}
-        <div className="py-24 flex justify-between items-center px-10 md:px-20 border-t border-border bg-background">
+        <div className="py-24 flex justify-between items-center px-4 md:px-10 border-t border-border bg-background mt-20">
           {surahId > 1 ? (
             <a href={`/surah/${surahId - 1}`} className="group flex flex-col items-start gap-2">
               <span className="text-[11px] uppercase font-bold text-muted tracking-widest group-hover:text-primary transition-colors">Previous Surah</span>
@@ -71,7 +73,7 @@ export default async function SurahPage({ params }: PageProps) {
           ) : <div />}
           
           <div className="text-center">
-            <p className="font-amiri text-3xl text-primary">{surah.arabicName}</p>
+            <p className="font-amiri text-4xl text-primary">{surah.arabicName}</p>
             <p className="text-[10px] text-muted font-bold uppercase mt-2 tracking-[0.2em]">{surah.englishName}</p>
           </div>
 

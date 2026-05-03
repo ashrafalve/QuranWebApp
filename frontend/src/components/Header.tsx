@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, Sun, Moon, Menu, Heart, Monitor, Sunset, ChevronDown } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Search, Sun, Moon, Menu, Heart, Monitor, ChevronDown } from 'lucide-react';
+import { useTheme } from '@/components/Providers';
 import { useEffect, useState, useRef } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { cn } from '@/utils/cn';
@@ -29,7 +29,6 @@ export default function Header() {
   const themes = [
     { id: 'light', name: 'Light', icon: Sun },
     { id: 'dark', name: 'Dark', icon: Moon },
-    { id: 'sepia', name: 'Sepia', icon: Sunset },
     { id: 'system', name: 'System', icon: Monitor },
   ];
 
@@ -44,18 +43,7 @@ export default function Header() {
         >
           <Menu className="w-6 h-6 text-muted" />
         </button>
-        <Link href="/" className="flex items-center gap-3">
-          <div className="bg-primary p-1.5 rounded-lg overflow-hidden flex items-center justify-center w-9 h-9 shadow-lg shadow-primary/10">
-            <Image 
-              src="/quran.png" 
-              alt="Logo" 
-              width={28} 
-              height={28} 
-              className="object-contain brightness-0 invert"
-              style={{ height: 'auto' }}
-              priority
-            />
-          </div>
+        <Link href="/" className="flex items-center">
           <div className="hidden sm:block">
             <h1 className="font-bold text-lg leading-none text-foreground">Quran Mazid</h1>
             <p className="text-[10px] text-muted font-bold uppercase mt-1 tracking-widest">Study, and Learn The Quran</p>

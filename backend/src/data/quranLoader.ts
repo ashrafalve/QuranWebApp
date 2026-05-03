@@ -59,7 +59,7 @@ let allAyahs: Ayah[] = [];
 const fetchEdition = async (edition: string): Promise<AlQuranEditionSurah[]> => {
   const url = `https://api.alquran.cloud/v1/quran/${edition}`;
   logger.info(`Fetching Quran data: ${url}`);
-  const response = await axios.get<AlQuranEditionResponse>(url, { timeout: 30_000 });
+  const response = await axios.get<AlQuranEditionResponse>(url, { timeout: 60_000 });
   if (response.data.code !== 200) {
     throw new Error(`alquran.cloud returned code ${response.data.code}`);
   }
@@ -77,54 +77,68 @@ const fetchEdition = async (edition: string): Promise<AlQuranEditionSurah[]> => 
 export const loadQuranData = async (): Promise<void> => {
   logger.info('Loading Quran data into memory…');
 
-  const [arabicData, englishData] = await Promise.all([
-    fetchEdition('quran-uthmani'),
-    fetchEdition('en.sahih'),
-  ]);
+  try {
+    const [arabicData, englishData, banglaData] = await Promise.all([
+      fetchEdition('quran-uthmani'),
+      fetchEdition('en.sahih'),
+      fetchEdition('bn.bengali'),
+    ]);
 
-  // Build an ayah-number → translation map for O(1) lookups
-  const translationMap = new Map<number, string>();
-  for (const surah of englishData) {
-    for (const ayah of surah.ayahs) {
-      translationMap.set(ayah.number, ayah.text);
+    // Build an ayah-number → translation map
+    const englishMap = new Map<number, string>();
+    for (const surah of englishData) {
+      for (const ayah of surah.ayahs) {
+        englishMap.set(ayah.number, ayah.text);
+      }
     }
+
+    const banglaMap = new Map<number, string>();
+    for (const surah of banglaData) {
+      for (const ayah of surah.ayahs) {
+        banglaMap.set(ayah.number, ayah.text);
+      }
+    }
+
+    surahList = [];
+    surahMap = new Map();
+    allAyahs = [];
+
+    for (const rawSurah of arabicData) {
+      const surah: Surah = {
+        id: rawSurah.number,
+        arabicName: rawSurah.name,
+        englishName: rawSurah.englishName,
+        englishNameTranslation: rawSurah.englishNameTranslation,
+        numberOfAyahs: rawSurah.numberOfAyahs,
+        revelationType: rawSurah.revelationType === 'Meccan' ? 'Meccan' : 'Medinan',
+      };
+
+      surahList.push(surah);
+
+      const ayahs: Ayah[] = rawSurah.ayahs.map((rawAyah) => ({
+        number: rawAyah.number,
+        numberInSurah: rawAyah.numberInSurah,
+        text: rawAyah.text,
+        translation: englishMap.get(rawAyah.number) ?? '',
+        banglaTranslation: banglaMap.get(rawAyah.number) ?? '',
+        surahId: rawSurah.number,
+        surahName: rawSurah.englishName,
+        surahNameArabic: rawSurah.name,
+        juz: rawAyah.juz,
+        page: rawAyah.page,
+      }));
+
+      surahMap.set(rawSurah.number, { ...surah, ayahs });
+      allAyahs.push(...ayahs);
+    }
+
+    logger.info(
+      `Quran data loaded: ${surahList.length} surahs, ${allAyahs.length} ayahs`
+    );
+  } catch (error) {
+    logger.error('CRITICAL: Failed to load Quran data', error);
+    // In a real app, we might want to retry or exit
   }
-
-  surahList = [];
-  surahMap = new Map();
-  allAyahs = [];
-
-  for (const rawSurah of arabicData) {
-    const surah: Surah = {
-      id: rawSurah.number,
-      arabicName: rawSurah.name,
-      englishName: rawSurah.englishName,
-      englishNameTranslation: rawSurah.englishNameTranslation,
-      numberOfAyahs: rawSurah.numberOfAyahs,
-      revelationType: rawSurah.revelationType === 'Meccan' ? 'Meccan' : 'Medinan',
-    };
-
-    surahList.push(surah);
-
-    const ayahs: Ayah[] = rawSurah.ayahs.map((rawAyah) => ({
-      number: rawAyah.number,
-      numberInSurah: rawAyah.numberInSurah,
-      text: rawAyah.text,
-      translation: translationMap.get(rawAyah.number) ?? '',
-      surahId: rawSurah.number,
-      surahName: rawSurah.englishName,
-      surahNameArabic: rawSurah.name,
-      juz: rawAyah.juz,
-      page: rawAyah.page,
-    }));
-
-    surahMap.set(rawSurah.number, { ...surah, ayahs });
-    allAyahs.push(...ayahs);
-  }
-
-  logger.info(
-    `Quran data loaded: ${surahList.length} surahs, ${allAyahs.length} ayahs`
-  );
 };
 
 // ---------------------------------------------------------------------------

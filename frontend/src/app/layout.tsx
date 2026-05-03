@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Amiri, Scheherazade_New } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { AudioProvider } from "@/contexts/AudioContext";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import AudioPlayer from "@/components/AudioPlayer";
@@ -30,20 +31,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning={true} className={`${inter.variable} ${amiri.variable} ${scheherazade.variable} font-sans antialiased bg-[#050505] text-gray-100`}>
+      <body suppressHydrationWarning={true} className={`${inter.variable} ${amiri.variable} ${scheherazade.variable} font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
         <Providers>
-          <div className="flex h-screen overflow-hidden">
-            {/* Left Fixed Sidebar */}
-            <Sidebar />
-            
-            <div className="flex flex-col flex-1 min-w-0 relative">
-              <Header />
-              <main className="flex-1 overflow-hidden flex">
-                {children}
-              </main>
-              <AudioPlayer />
+          <AudioProvider>
+            <div className="flex h-screen overflow-hidden">
+              {/* Left Fixed Sidebar */}
+              <Sidebar />
+
+              <div className="flex flex-col flex-1 min-w-0 relative">
+                <Header />
+                <main className="flex-1 overflow-hidden flex">
+                  {children}
+                </main>
+                <AudioPlayer />
+              </div>
             </div>
-          </div>
+          </AudioProvider>
         </Providers>
       </body>
     </html>

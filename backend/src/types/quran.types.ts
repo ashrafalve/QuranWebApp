@@ -8,6 +8,7 @@ export interface Ayah {
   numberInSurah: number;    // Ayah number within the surah
   text: string;             // Arabic text
   translation: string;      // English translation (Saheeh International)
+  banglaTranslation: string; // Bangla translation
   surahId: number;          // Parent surah number
   surahName: string;        // Surah English name
   surahNameArabic: string;  // Surah Arabic name

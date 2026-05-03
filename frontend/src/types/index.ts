@@ -3,6 +3,7 @@ export interface Ayah {
   numberInSurah: number;
   text: string;
   translation: string;
+  banglaTranslation: string;
   surahId: number;
   surahName: string;
   surahNameArabic: string;

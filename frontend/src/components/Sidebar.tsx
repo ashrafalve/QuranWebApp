@@ -1,17 +1,16 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { fetchSurahs } from '@/utils/api';
+import { Surah } from '@/types';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutGrid, Send, Bookmark, LayoutPanelLeft, BookOpen } from 'lucide-react';
+import { Search, LayoutGrid, ListFilter, BookOpen, Send, Bookmark, LayoutPanelLeft, Home } from 'lucide-react';
 import { cn } from '@/utils/cn';
+import { useTheme } from '@/components/Providers';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
-const HomeIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M12 2L3 8V20H21V8L12 2Z" />
-    <circle cx="12" cy="13" r="3" />
-  </svg>
-);
+const HomeIcon = Home;
 
 const menuItems = [
   { icon: HomeIcon, href: '/', label: 'Home' },
@@ -23,27 +22,52 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const [surahs, setSurahs] = useState<Surah[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const { theme } = useTheme();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const loadSurahs = async () => {
+      try {
+        const data = await fetchSurahs();
+        setSurahs(data);
+      } catch (error) {
+        console.error('Failed to load surahs', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSurahs();
+  }, []);
+
+  const filteredSurahs = surahs.filter(s => 
+    s.englishName.toLowerCase().includes(search.toLowerCase()) ||
+    s.id.toString() === search
+  );
+
+  // Logo: always white (grayscale + brightness-0 + invert), regardless of theme
+  const logoClass = "object-contain grayscale brightness-0 invert";
 
   return (
     <aside className="hidden md:flex flex-col items-center py-6 w-[80px] bg-background border-r border-border z-50 transition-colors duration-300">
       {/* Top Logo */}
       <div className="mb-12 flex justify-center w-full px-2">
         <Link href="/" className="bg-primary p-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-110 transition-transform flex items-center justify-center overflow-hidden w-12 h-12">
-           <Image 
-            src="/quran.png" 
+          <Image 
+            src="/quranlogo.png" 
             alt="Logo" 
             width={32} 
             height={32} 
-            className="object-contain brightness-0 invert" 
-            style={{ height: 'auto' }} 
+            className={logoClass}
             priority
           />
         </Link>
       </div>
 
-      {/* Navigation Icons - Exactly Middle Aligned */}
-      <div className="flex flex-col gap-8 w-full items-center">
+      {/* Navigation Icons - Centered */}
+      <div className="flex-1 flex flex-col gap-8 w-full items-center justify-center">
         {menuItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           return (
