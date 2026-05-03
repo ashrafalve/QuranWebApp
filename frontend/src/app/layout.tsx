@@ -3,9 +3,9 @@ import { Inter, Amiri, Scheherazade_New } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { AudioProvider } from "@/contexts/AudioContext";
-import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import AudioPlayer from "@/components/AudioPlayer";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const amiri = Amiri({ 
@@ -20,8 +20,11 @@ const scheherazade = Scheherazade_New({
 });
 
 export const metadata: Metadata = {
-  title: "Quran App | Read & Listen",
-  description: "A beautiful Quran reading application",
+  title: "Quran Mazid - Read, Study, Learn",
+  description: "Read, study, and learn the Quran with Arabic text, translations, and audio recitation.",
+  icons: {
+    icon: "/quranlogo.png",
+  },
 };
 
 export default function RootLayout({
@@ -35,16 +38,15 @@ export default function RootLayout({
         <Providers>
           <AudioProvider>
             <div className="flex h-screen overflow-hidden">
-              {/* Left Fixed Sidebar */}
-              <Sidebar />
-
-              <div className="flex flex-col flex-1 min-w-0 relative">
-                <Header />
-                <main className="flex-1 overflow-hidden flex">
-                  {children}
-                </main>
-                <AudioPlayer />
-              </div>
+              <ConditionalLayout>
+                <div className="flex flex-col flex-1 min-w-0 relative">
+                  <Header />
+                  <main className="flex-1 overflow-hidden flex">
+                    {children}
+                  </main>
+                  <AudioPlayer />
+                </div>
+              </ConditionalLayout>
             </div>
           </AudioProvider>
         </Providers>

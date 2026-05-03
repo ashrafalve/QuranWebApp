@@ -97,3 +97,16 @@ export interface RawEditionSurah {
 export interface QuranData {
   surahs: RawSurah[];
 }
+
+export interface Juz {
+  id: number;
+  startAyah: number;
+  endAyah: number;
+  surahs: Surah[];
+  startSurah: Surah;
+  endSurah: Surah;
+  startSurahId: number;
+  endSurahId: number;
+  startAyahInSurah: number;
+  endAyahInSurah: number;
+}

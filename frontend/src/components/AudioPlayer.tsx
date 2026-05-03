@@ -45,8 +45,8 @@ export default function AudioPlayer() {
       </div>
 
       <div className="flex-1 flex items-center justify-between px-6 md:px-12">
-        {/* Left Side: Meta */}
-        <div className="flex items-center gap-5 w-1/4">
+        {/* Left Side: Meta - Hidden on tiny screens */}
+        <div className="hidden sm:flex items-center gap-5 w-1/4">
           <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold text-xs">
             {currentPlaying.surahId}:{currentPlaying.ayahNumber}
           </div>

@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useCallback, useState, useRef } f
 type AudioContextType = {
   currentPlaying: { surahId: number; ayahNumber: number; globalNumber: number; totalAyahs: number } | null;
   isPlaying: boolean;
-  play: (globalNumber: number, surahId: number, ayahNumber: number, totalAyahs: number) => void;
+  play: (globalNumber: number, totalAyahs?: number) => void;
   pause: () => void;
   resume: () => void;
   stop: () => void;
@@ -70,13 +70,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const stopAudio = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+      audioRef.current.src = '';
+      audioRef.current.load();
     }
     setIsPlaying(false);
     isPlayingRef.current = false;
   }, []);
 
-  const playRef = useRef<(g: number, s: number, a: number, t: number) => void>(() => {
+  const playRef = useRef<(g: number, t?: number) => void>(() => {
     throw new Error('play not initialized');
   });
 
@@ -84,14 +85,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (preloadedSurahsRef.current.has(surahId)) return;
 
     const API_BASE = typeof window !== 'undefined'
-      ? (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api')
-      : 'http://localhost:5000/api';
+      ? (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api')
+      : 'http://127.0.0.1:5000/api';
 
     fetch(`${API_BASE}/audio/${surahId}`)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+      .then(res => res.json())
       .then(json => {
         const items = json.data || [];
         items.forEach((item: { url: string }) => {
@@ -102,15 +100,47 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           }
         });
         preloadedSurahsRef.current.add(surahId);
-        console.log(`Preloaded surah ${surahId} (${items.length} ayahs)`);
       })
-      .catch(err => {
-        console.warn('Failed to preload surah audio:', err);
-      });
+      .catch(() => {});
   }, []);
 
-  const play = useCallback((globalNumber: number, surahId: number, ayahNumber: number, totalAyahs: number) => {
+  const [surahBoundaries, setSurahBoundaries] = useState<{ id: number; start: number; end: number }[]>([]);
+
+  useEffect(() => {
+    const API_BASE = typeof window !== 'undefined'
+      ? (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api')
+      : 'http://127.0.0.1:5000/api';
+    
+    fetch(`${API_BASE}/surah`)
+      .then(res => res.json())
+      .then(json => {
+        let currentGlobal = 1;
+        const boundaries = (json.data || []).map((s: any) => {
+          const boundary = {
+            id: s.id,
+            start: currentGlobal,
+            end: currentGlobal + s.numberOfAyahs - 1
+          };
+          currentGlobal += s.numberOfAyahs;
+          return boundary;
+        });
+        setSurahBoundaries(boundaries);
+      })
+      .catch(err => console.error('Failed to fetch surah boundaries', err));
+  }, []);
+
+  const getMetadata = useCallback((globalNumber: number) => {
+    const boundary = surahBoundaries.find(b => globalNumber >= b.start && globalNumber <= b.end);
+    if (!boundary) return { surahId: 1, ayahNumber: 1 };
+    return {
+      surahId: boundary.id,
+      ayahNumber: globalNumber - boundary.start + 1
+    };
+  }, [surahBoundaries]);
+
+  const play = useCallback((globalNumber: number, totalAyahs: number = 6236) => {
     const url = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalNumber}.mp3`;
+    const { surahId, ayahNumber } = getMetadata(globalNumber);
 
     stopAudio();
 
@@ -125,17 +155,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       audio.setAttribute('data-global-audio', 'true');
       document.body.appendChild(audio);
       audioRef.current = audio;
-    } else if (!document.body.contains(audio)) {
-      document.body.appendChild(audio);
     }
 
     removeAllEventHandlers(audio);
-    audioRef.current = audio;
 
-    const trackData = { globalNumber, surahId, ayahNumber, totalAyahs };
-    (audio as HTMLAudioElement & { __trackData?: typeof trackData }).__trackData = trackData;
+    const trackData = { globalNumber, totalAyahs };
+    (audio as any).__trackData = trackData;
 
-    const handleLoadStart = () => setIsLoading(true);
     const handleCanPlay = () => {
       setIsLoading(false);
       audio!.volume = volumeRef.current;
@@ -145,54 +171,38 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         });
       }
     };
-    const handleTimeUpdate = () => {
-      const p = (audio!.currentTime / audio!.duration) * 100;
-      setProgress(p || 0);
-      setCurrentTime(formatTime(audio!.currentTime));
-      setDuration(formatTime(audio!.duration));
-    };
+
     const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress(0);
-      const data = (audio as HTMLAudioElement & { __trackData?: typeof trackData }).__trackData;
-      if (data && data.ayahNumber < data.totalAyahs) {
-        playRef.current(data.globalNumber + 1, data.surahId, data.ayahNumber + 1, data.totalAyahs);
+      const data = (audio as any).__trackData;
+      if (data && data.globalNumber < data.totalAyahs) {
+        setTimeout(() => {
+          playRef.current(data.globalNumber + 1, data.totalAyahs);
+        }, 100); // Small delay for smooth transition
       } else {
+        setIsPlaying(false);
         setCurrentPlaying(null);
       }
     };
-    const handleWaiting = () => setIsLoading(true);
-    const handlePlaying = () => setIsLoading(false);
-    const handleError = () => {
+
+    addEventHandler(audio, 'loadstart', () => setIsLoading(true));
+    addEventHandler(audio, 'canplay', handleCanPlay);
+    addEventHandler(audio, 'timeupdate', () => {
+      setProgress((audio!.currentTime / audio!.duration) * 100 || 0);
+      setCurrentTime(formatTime(audio!.currentTime));
+      setDuration(formatTime(audio!.duration));
+    });
+    addEventHandler(audio, 'ended', handleEnded);
+    addEventHandler(audio, 'waiting', () => setIsLoading(true));
+    addEventHandler(audio, 'playing', () => setIsLoading(false));
+    addEventHandler(audio, 'error', () => {
       setIsLoading(false);
       setIsPlaying(false);
-    };
+    });
 
-    // Attach BEFORE setting src to catch events even if cached
-    addEventHandler(audio, 'loadstart', handleLoadStart);
-    addEventHandler(audio, 'canplay', handleCanPlay);
-    addEventHandler(audio, 'timeupdate', handleTimeUpdate);
-    addEventHandler(audio, 'ended', handleEnded);
-    addEventHandler(audio, 'waiting', handleWaiting);
-    addEventHandler(audio, 'playing', handlePlaying);
-    addEventHandler(audio, 'error', handleError);
-
-    // Set source and load
     audio.src = url;
     audio.load();
-
-    // If already cached, canplay may have already fired; trigger manually
-    if (audio.readyState >= 3) {
-      setTimeout(() => {
-        if (isPlayingRef.current && audio.paused) {
-          handleCanPlay();
-        }
-      }, 0);
-    }
-
-    // Begin preloading remaining ayahs of this surah (once)
     preloadSurahAudio(surahId);
-  }, [stopAudio, preloadSurahAudio]);
+  }, [stopAudio, preloadSurahAudio, getMetadata]);
 
   useEffect(() => { playRef.current = play; }, [play]);
 

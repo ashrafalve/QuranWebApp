@@ -43,8 +43,8 @@ interface AlQuranEditionResponse {
 // Module-level in-memory store (populated once at startup)
 // ---------------------------------------------------------------------------
 
-let surahList: Surah[] = [];
-let surahMap: Map<number, SurahWithAyahs> = new Map();
+export let surahList: Surah[] = [];
+export let surahMap: Map<number, SurahWithAyahs> = new Map();
 
 // Flat array of every ayah — used for full-text search
 let allAyahs: Ayah[] = [];

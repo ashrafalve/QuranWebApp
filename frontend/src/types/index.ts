@@ -24,6 +24,24 @@ export interface SurahWithAyahs extends Surah {
   ayahs: Ayah[];
 }
 
+export interface Juz {
+  id: number;
+  startAyah: number;
+  endAyah: number;
+  surahCount: number;
+  uniqueSurahs: Surah[];
+  startSurah: Surah;
+  endSurah: Surah;
+  startSurahId: number;
+  endSurahId: number;
+  startAyahInSurah: number;
+  endAyahInSurah: number;
+}
+
+export interface JuzWithAyahs extends Juz {
+  ayahs: Ayah[];
+}
+
 export interface SearchResult {
   ayah: Ayah;
   matchType: 'arabic' | 'translation';

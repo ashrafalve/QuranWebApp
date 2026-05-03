@@ -1,24 +1,41 @@
-import axios from 'axios';
+import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Use 127.0.0.1 to avoid IPv6 resolution issues on some Windows systems
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
 
-export const api = axios.create({
-  baseURL: API_URL,
-});
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url, {
+    cache: 'no-store', // Disable caching for now to ensure we see fresh data during debugging
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+  return res.json();
+}
 
-export const fetchSurahs = async () => {
-  const { data } = await api.get('/surah');
-  return data.data;
+export const fetchSurahs = async (): Promise<Surah[]> => {
+  const json = await fetchJson<{ data: Surah[] }>(`${API_URL}/surah`);
+  return json.data;
 };
 
-export const fetchSurahById = async (id: number) => {
-  const { data } = await api.get(`/surah/${id}`);
-  return data.data;
+export const fetchSurahById = async (id: number): Promise<SurahWithAyahs> => {
+  const json = await fetchJson<{ data: SurahWithAyahs }>(`${API_URL}/surah/${id}`);
+  return json.data;
 };
 
-export const searchAyahs = async (q: string) => {
-  const { data } = await api.get(`/search?q=${q}`);
-  return data.data;
+export const fetchJuzList = async (): Promise<Juz[]> => {
+  const json = await fetchJson<{ data: Juz[] }>(`${API_URL}/juz`);
+  return json.data;
+};
+
+export const fetchJuzById = async (id: number): Promise<JuzWithAyahs> => {
+  const json = await fetchJson<{ data: JuzWithAyahs }>(`${API_URL}/juz/${id}`);
+  return json.data;
+};
+
+export const searchAyahs = async (q: string): Promise<{ query: string; total: number; page: number; totalPages: number; results: { ayah: Ayah; matchType: 'arabic' | 'translation' }[] }> => {
+  const json = await fetchJson<{ data: { query: string; total: number; page: number; totalPages: number; results: { ayah: Ayah; matchType: 'arabic' | 'translation' }[] } }>(`${API_URL}/search?q=${q}`);
+  return json.data;
 };
 
 export const getAudioUrl = (globalNumber: number) => {

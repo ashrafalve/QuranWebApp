@@ -3,10 +3,11 @@
 // Central route registry
 // ============================================================
 
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import surahRoutes from './surahRoutes';
 import searchRoutes from './searchRoutes';
 import audioRoutes from './audioRoutes';
+import juzRoutes from './juzRoutes';
 import { cache } from '../utils/cache';
 import { isDataLoaded } from '../data/quranLoader';
 
@@ -29,5 +30,6 @@ router.get('/health', (_req: Request, res: Response) => {
 router.use('/surah', surahRoutes);
 router.use('/search', searchRoutes);
 router.use('/audio', audioRoutes);
+router.use('/juz', juzRoutes);
 
 export default router;

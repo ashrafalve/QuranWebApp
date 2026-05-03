@@ -3,6 +3,7 @@ import { Surah } from '@/types';
 import Link from 'next/link';
 import { Search, BookOpen, Clock, Heart, LayoutGrid } from 'lucide-react';
 import Image from 'next/image';
+import HomeFooter from '@/components/HomeFooter';
 
 export default async function Home() {
   const surahs: Surah[] = await fetchSurahs();
@@ -12,50 +13,59 @@ export default async function Home() {
       <div className="max-w-7xl mx-auto space-y-20">
         
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-card rounded-[40px] border border-border flex flex-col items-center text-center space-y-8 py-16 px-6">
+        <div className="relative overflow-hidden bg-card rounded-3xl md:rounded-[40px] border border-border flex flex-col items-center text-center space-y-6 md:space-y-8 py-10 md:py-16 px-4 md:px-6">
           {/* Background Watermark */}
           <div className="absolute left-0 top-0 w-1/3 h-full opacity-5 pointer-events-none">
               <Image 
                src="/makkahiconimage.png" 
-               alt="Makkah" 
+               alt="Makkah Light" 
                fill 
                sizes="(max-width: 768px) 100vw, 33vw"
-               className="object-contain p-12 -translate-x-1/4 w-auto h-auto" 
+               className="object-contain p-12 -translate-x-1/4 w-auto h-auto dark:hidden" 
+               priority
+             />
+              <Image 
+               src="/makkahicon2.png" 
+               alt="Makkah Dark" 
+               fill 
+               sizes="(max-width: 768px) 100vw, 33vw"
+               className="object-contain p-12 -translate-x-1/4 w-auto h-auto hidden dark:block" 
                priority
              />
           </div>
           
-              <div className="relative z-10 flex flex-col items-center gap-4">
-                 <div className="bg-primary p-5 rounded-3xl shadow-2xl shadow-primary/20 mb-6 flex items-center justify-center overflow-hidden w-24 h-24">
-                    <Image 
-                      src="/quranlogo.png" 
-                      alt="Quran Logo" 
-                      width={80} 
-                      height={80} 
-                      className="object-contain grayscale brightness-0 dark:invert"
-                      priority
-                    />
-                 </div>
-             <h1 className="font-amiri text-6xl md:text-8xl font-bold text-foreground tracking-tight drop-shadow-2xl">
-               QURAN <span className="text-primary">MAZID</span>
-             </h1>
-             <p className="text-lg md:text-xl text-muted font-medium tracking-wide max-w-lg">
-               Read, Study, and Learn The Quran
-             </p>
-          </div>
+               <div className="relative z-10 flex flex-col items-center gap-4">
+                  <div className="bg-primary p-4 rounded-3xl shadow-2xl shadow-primary/20 mb-4 flex items-center justify-center overflow-hidden w-20 h-20">
+                     <Image 
+                       src="/quranlogo.png" 
+                       alt="Quran Logo" 
+                       width={64} 
+                       height={64} 
+                       className="object-contain grayscale brightness-0 dark:invert"
+                       priority
+                     />
+                  </div>
+              <h1 className="font-amiri text-4xl md:text-6xl font-bold text-foreground tracking-tight drop-shadow-2xl">
+                QURAN <span className="text-primary">MAZID</span>
+              </h1>
+              <p className="text-base md:text-lg text-muted font-medium tracking-wide max-w-lg">
+                Read, Study, and Learn The Quran
+              </p>
+           </div>
 
-          {/* Large Pill Search Bar */}
-          <div className="relative w-full max-w-3xl group">
-            <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full" />
-            <div className="relative flex items-center bg-background border border-border group-focus-within:border-primary/50 rounded-full py-5 px-8 shadow-2xl transition-all">
-              <Search className="w-6 h-6 text-muted group-focus-within:text-primary transition-colors" />
-              <input 
-                type="text" 
-                placeholder="What do you want to read? (Surah name, Ayah or Keyword)" 
-                className="w-full bg-transparent border-none focus:ring-0 text-lg text-foreground placeholder-muted pl-4 outline-none"
-              />
-            </div>
-          </div>
+           {/* Large Pill Search Bar */}
+           <form action="/search" method="get" className="relative w-full max-w-3xl group">
+             <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full" />
+             <div className="relative flex items-center bg-background border border-border group-focus-within:border-primary/50 rounded-full py-4 px-6 shadow-2xl transition-all">
+               <Search className="w-5 h-5 text-muted group-focus-within:text-primary transition-colors" />
+               <input 
+                 type="text" 
+                 name="q"
+                 placeholder="Search surah, ayah, or keyword..." 
+                 className="w-full bg-transparent border-none focus:ring-0 text-base text-foreground placeholder-muted pl-4 outline-none"
+               />
+             </div>
+           </form>
         </div>
 
         {/* Surah Grid Section */}
@@ -99,20 +109,7 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Support CTA */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-primary/10 to-background rounded-[40px] p-10 md:p-16 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-10">
-           <div className="space-y-4 max-w-xl text-center md:text-left">
-              <h3 className="text-3xl font-bold text-foreground">Help spread the knowledge of Islam</h3>
-              <p className="text-muted font-medium">Your regular support helps us reach our religious brothers and sisters with the message of Islam. Join our mission today.</p>
-           </div>
-           <button className="whitespace-nowrap bg-primary hover:opacity-90 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95">
-             Support Quran Mazid
-           </button>
-        </div>
-
-        <div className="py-20 text-center border-t border-border">
-           <p className="text-muted text-sm font-bold uppercase tracking-widest">© 2026 Quran Mazid - Read, Study and Learn</p>
-        </div>
+        <HomeFooter />
       </div>
     </div>
   );

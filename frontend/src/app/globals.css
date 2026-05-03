@@ -27,6 +27,15 @@
   --muted-text: #9ca3af;
 }
 
+:root.sepia {
+  --primary: #97724E;
+  --background: #ffffff;
+  --foreground: #000000;
+  --card-bg: #ffffff;
+  --border-color: #d7ccc8;
+  --muted-text: #5d4037;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
