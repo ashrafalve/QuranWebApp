@@ -1,6 +1,6 @@
 import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs, PaginatedSearchResult } from '@/types';
 
-// Use 127.0.0.1 to avoid IPv6 resolution issues on some Windows systems
+// Default to localhost for development, override with NEXT_PUBLIC_API_URL in production
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
 
 async function fetchJson<T>(url: string): Promise<T> {
