@@ -23,7 +23,10 @@ export const metadata: Metadata = {
   title: "Quran Mazid - Read, Study, Learn",
   description: "Read, study, and learn the Quran with Arabic text, translations, and audio recitation.",
   icons: {
-    icon: "/quranlogo.png",
+    icon: [
+      { url: "/quranlogo.png", type: "image/png" },
+      { url: "/favicon.ico", type: "image/x-icon", rel: "shortcut icon" }
+    ],
   },
 };
 
@@ -37,11 +40,11 @@ export default function RootLayout({
       <body suppressHydrationWarning={true} className={`${inter.variable} ${amiri.variable} ${scheherazade.variable} font-sans antialiased bg-background text-foreground transition-colors duration-300`}>
         <Providers>
           <AudioProvider>
-            <div className="flex h-screen overflow-hidden">
+            <div suppressHydrationWarning={true} className="flex h-screen overflow-hidden">
               <ConditionalLayout>
-                <div className="flex flex-col flex-1 min-w-0 relative">
+                <div suppressHydrationWarning={true} className="flex flex-col flex-1 min-w-0 relative">
                   <Header />
-                  <main className="flex-1 overflow-hidden flex">
+                  <main suppressHydrationWarning={true} className="flex-1 overflow-hidden flex">
                     {children}
                   </main>
                   <AudioPlayer />

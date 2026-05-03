@@ -5,19 +5,31 @@ import { useAppStore } from '@/store/useAppStore';
 import { cn } from '@/utils/cn';
 
 export default function FontSettings() {
-  const { settings, setSettings } = useAppStore();
+  const { settings, setSettings, readingMode, setReadingMode } = useAppStore();
 
   return (
     <div className="w-[320px] h-full bg-background border-l border-border flex flex-col hidden xl:flex transition-colors duration-300">
       {/* Tabs */}
       <div className="p-6">
         <div className="bg-card rounded-2xl p-1 flex">
-          <button className="flex-1 py-2 text-xs font-bold bg-background text-foreground rounded-xl shadow-sm border border-border/50">Translation</button>
-          <button className="flex-1 py-2 text-xs font-bold text-muted hover:text-foreground transition-colors">Reading</button>
+          <button 
+            onClick={() => setReadingMode(false)}
+            className={cn("flex-1 py-2 text-xs font-bold rounded-xl transition-all", !readingMode ? "bg-background text-foreground shadow-sm border border-border/50" : "text-muted hover:text-foreground")}
+          >
+            Translation
+          </button>
+          <button 
+            onClick={() => setReadingMode(true)}
+            className={cn("flex-1 py-2 text-xs font-bold rounded-xl transition-all", readingMode ? "bg-background text-foreground shadow-sm border border-border/50" : "text-muted hover:text-foreground")}
+          >
+            Reading
+          </button>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-6 space-y-10 custom-scrollbar">
+        {!readingMode ? (
+          <>
         {/* Font Settings Section */}
         <div className="space-y-8">
           <div className="flex items-center justify-between text-primary">
@@ -77,6 +89,18 @@ export default function FontSettings() {
             Support Us
           </button>
         </div>
+        </>
+        ) : (
+          <div className="space-y-4">
+            <button className="w-full bg-background border border-border rounded-xl py-3 px-4 flex items-center justify-between group hover:border-primary transition-all">
+              <div className="flex items-center gap-3">
+                <Type className="w-4 h-4 text-muted group-hover:text-foreground" />
+                <span className="text-sm font-semibold text-muted group-hover:text-foreground">Change Mushaf</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

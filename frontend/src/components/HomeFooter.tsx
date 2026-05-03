@@ -2,8 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTheme } from '@/components/Providers';
+import { cn } from '@/utils/cn';
 
 export default function HomeFooter() {
+  const { theme } = useTheme();
+  const logoFilterClass = theme === 'dark' ? 'grayscale brightness-0 invert' : 'grayscale';
+  
   return (
     <footer className="border-t border-border bg-card/50 backdrop-blur-sm mt-20">
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -17,7 +22,7 @@ export default function HomeFooter() {
                   alt="Quran Mazid Logo"
                   width={24}
                   height={24}
-                  className="object-contain grayscale brightness-0 invert"
+                  className={cn("object-contain", logoFilterClass)}
                 />
               </div>
               <div>

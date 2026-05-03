@@ -16,6 +16,10 @@ interface AppState {
   // Sidebar State
   isSurahSidebarOpen: boolean;
   setSurahSidebarOpen: (open: boolean) => void;
+
+  // View Mode
+  readingMode: boolean;
+  setReadingMode: (mode: boolean) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -36,10 +40,13 @@ export const useAppStore = create<AppState>()(
 
       isSurahSidebarOpen: true,
       setSurahSidebarOpen: (open) => set({ isSurahSidebarOpen: open }),
+
+      readingMode: false,
+      setReadingMode: (mode) => set({ readingMode: mode }),
     }),
     {
       name: 'quran-app-storage',
-      partialize: (state) => ({ settings: state.settings }),
+      partialize: (state) => ({ settings: state.settings, readingMode: state.readingMode }),
     }
   )
 );

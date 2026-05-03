@@ -1,5 +1,5 @@
 import { fetchSurahById } from '@/utils/api';
-import AyahCard from '@/components/AyahCard';
+import SurahReader from '@/components/SurahReader';
 import { SurahWithAyahs } from '@/types';
 import Image from 'next/image';
 
@@ -58,22 +58,20 @@ export default async function SurahPage({ params }: PageProps) {
           />
         </div>
 
-        <div className="relative z-10">
-          <div className="text-center space-y-4">
-            <h1 className="text-5xl font-bold text-foreground tracking-tight drop-shadow-sm">
+        <div className="relative z-10 flex items-center justify-center min-h-[120px]">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight drop-shadow-sm">
               Surah {surah.englishName.replace(/-/g, ' ')}
             </h1>
-            <div className="flex items-center justify-center gap-6 text-muted font-bold text-sm uppercase tracking-[0.3em]">
-              <span>Ayah-{surah.numberOfAyahs}</span>
-              <span className="w-1.5 h-1.5 bg-primary rounded-full" />
-              <span>{surah.revelationType === 'Meccan' ? 'Makkah' : 'Madinah'}</span>
-            </div>
+            <p className="text-muted text-xs md:text-sm font-medium">
+              Ayah - {surah.numberOfAyahs}, {surah.revelationType === 'Meccan' ? 'Makkah' : 'Madinah'}
+            </p>
           </div>
 
           {/* Bismillah in the corner */}
           {surahId !== 1 && surahId !== 9 && (
-            <div className="absolute -top-8 right-0 opacity-30 hover:opacity-100 transition-opacity duration-500 hidden md:block">
-              <p className="font-amiri text-3xl text-foreground whitespace-nowrap">
+            <div className="absolute top-0 right-0 opacity-30 hover:opacity-100 transition-opacity duration-500 hidden md:block pr-8 pt-4">
+              <p className="font-amiri text-2xl text-foreground whitespace-nowrap">
                 بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
               </p>
             </div>
@@ -86,16 +84,7 @@ export default async function SurahPage({ params }: PageProps) {
 
       {/* Reader Content */}
       <div className="max-w-4xl mx-auto px-4 md:px-8 pb-32">
-        {/* Ayah List */}
-        <div className="divide-y divide-border mt-10">
-          {surah.ayahs.map((ayah) => (
-            <AyahCard
-              key={ayah.number}
-              ayah={ayah}
-              totalAyahs={surah.ayahs[surah.ayahs.length - 1].number}
-            />
-          ))}
-        </div>
+        <SurahReader surah={surah} surahId={surahId} />
 
         {/* Navigation Footer */}
         <div className="py-24 flex justify-between items-center px-4 md:px-10 border-t border-border bg-background mt-20">

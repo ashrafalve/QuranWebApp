@@ -9,8 +9,8 @@ export default async function Home() {
   const surahs: Surah[] = await fetchSurahs();
 
   return (
-    <div className="flex-1 overflow-y-auto bg-background p-6 md:p-12 scroll-smooth transition-colors duration-300">
-      <div className="max-w-7xl mx-auto space-y-20">
+    <div suppressHydrationWarning={true} className="flex-1 overflow-y-auto bg-background scroll-smooth transition-colors duration-300">
+      <div suppressHydrationWarning={true} className="max-w-7xl mx-auto space-y-20 p-6 md:p-12 pb-0">
         
         {/* Hero Section */}
         <div className="relative overflow-hidden bg-card rounded-3xl md:rounded-[40px] border border-border flex flex-col items-center text-center space-y-6 md:space-y-8 py-10 md:py-16 px-4 md:px-6">
@@ -23,7 +23,7 @@ export default async function Home() {
                sizes="(max-width: 768px) 100vw, 33vw"
                className="object-contain p-12 -translate-x-1/4 w-auto h-auto dark:hidden" 
                priority
-             />
+              />
               <Image 
                src="/makkahicon2.png" 
                alt="Makkah Dark" 
@@ -31,20 +31,20 @@ export default async function Home() {
                sizes="(max-width: 768px) 100vw, 33vw"
                className="object-contain p-12 -translate-x-1/4 w-auto h-auto hidden dark:block" 
                priority
-             />
+              />
           </div>
           
                <div className="relative z-10 flex flex-col items-center gap-4">
-                  <div className="bg-primary p-4 rounded-3xl shadow-2xl shadow-primary/20 mb-4 flex items-center justify-center overflow-hidden w-20 h-20">
-                     <Image 
-                       src="/quranlogo.png" 
-                       alt="Quran Logo" 
-                       width={64} 
-                       height={64} 
-                       className="object-contain grayscale brightness-0 dark:invert"
-                       priority
-                     />
-                  </div>
+                   <div className="bg-primary p-4 rounded-3xl shadow-2xl shadow-primary/20 mb-4 flex items-center justify-center overflow-hidden w-20 h-20">
+                      <Image 
+                        src="/quranlogo.png" 
+                        alt="Quran Logo" 
+                        width={64} 
+                        height={64} 
+                        className="object-contain grayscale"
+                        priority
+                      />
+                   </div>
               <h1 className="font-amiri text-4xl md:text-6xl font-bold text-foreground tracking-tight drop-shadow-2xl">
                 QURAN <span className="text-primary">MAZID</span>
               </h1>
@@ -108,9 +108,9 @@ export default async function Home() {
             ))}
           </div>
         </div>
-
-        <HomeFooter />
       </div>
+
+      <HomeFooter />
     </div>
   );
 }

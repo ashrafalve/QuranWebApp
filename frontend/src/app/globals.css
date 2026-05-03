@@ -27,11 +27,11 @@
   --muted-text: #9ca3af;
 }
 
-:root.sepia {
+:root.theme-sepia {
   --primary: #97724E;
-  --background: #ffffff;
-  --foreground: #000000;
-  --card-bg: #ffffff;
+  --background: #f8f0e0;
+  --foreground: #3e2723;
+  --card-bg: #fcf8f2;
   --border-color: #d7ccc8;
   --muted-text: #5d4037;
 }

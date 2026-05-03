@@ -27,13 +27,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
 
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark', 'sepia');
+    root.classList.remove('light', 'dark', 'theme-sepia');
 
     if (theme === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       root.classList.add(systemTheme);
     } else {
-      root.classList.add(theme);
+      root.classList.add(theme === 'sepia' ? 'theme-sepia' : theme);
     }
 
     localStorage.setItem('theme', theme);

@@ -57,6 +57,9 @@ export default function Header() {
 
   const CurrentIcon = themes.find(t => t.id === theme)?.icon || Sun;
 
+  // Theme-aware logo filter: white for dark, dark for light/sepia
+  const logoFilterClass = theme === 'dark' ? 'grayscale brightness-0 invert' : 'grayscale';
+
   return (
     <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6 z-[60] transition-colors duration-300">
       {/* Left - Logo / Brand */}
@@ -75,7 +78,7 @@ export default function Header() {
                 alt="Logo"
                 width={28}
                 height={28}
-                className="object-contain grayscale brightness-0 invert"
+                className={cn("object-contain", logoFilterClass)}
                 priority
               />
             </div>

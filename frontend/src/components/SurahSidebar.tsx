@@ -5,9 +5,11 @@ import { fetchSurahs, fetchJuzList } from '@/utils/api';
 import { Surah, Juz } from '@/types';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, X, Home, BookOpen, Navigation, Bookmark, LayoutPanelLeft } from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import { HomeIconCustom, ReadQuranIconCustom, NavigationIconCustom, BookmarkIconCustom, MoreIconCustom } from './CustomIcons';
 import { cn } from '@/utils/cn';
 import { useAppStore } from '@/store/useAppStore';
+import { JUZ_DATA } from '@/utils/juzInfo';
 
 export default function SurahSidebar() {
   const [surahs, setSurahs] = useState<Surah[]>([]);
@@ -22,11 +24,11 @@ export default function SurahSidebar() {
   const { isSurahSidebarOpen, setSurahSidebarOpen } = useAppStore();
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/surah', label: 'Read Quran', icon: BookOpen },
-    { href: '#', label: 'Go to Ayah', icon: Navigation, disabled: true },
-    { href: '#', label: 'Bookmarks', icon: Bookmark, disabled: true },
-    { href: '#', label: 'More', icon: LayoutPanelLeft, disabled: true },
+    { href: '/', label: 'Home', icon: HomeIconCustom },
+    { href: '/surah', label: 'Read Quran', icon: ReadQuranIconCustom },
+    { href: '#', label: 'Go to Ayah', icon: NavigationIconCustom, disabled: true },
+    { href: '#', label: 'Bookmarks', icon: BookmarkIconCustom, disabled: true },
+    { href: '#', label: 'More', icon: MoreIconCustom, disabled: true },
   ];
 
   useEffect(() => {
@@ -73,6 +75,15 @@ export default function SurahSidebar() {
     );
   }, [surahs, search]);
 
+  const filteredJuzList = useMemo(() => {
+    if (!search.trim()) return juzList;
+    const lower = search.toLowerCase();
+    return (juzList || []).filter(j => 
+      j.id.toString() === search ||
+      j.uniqueSurahs?.some(s => s.englishName.toLowerCase().includes(lower))
+    );
+  }, [juzList, search]);
+
   if (!mounted) {
     return <div className={cn("hidden w-[320px] h-full bg-background border-r border-border flex-col", !isHomePage && "lg:flex")} />;
   }
@@ -96,7 +107,7 @@ export default function SurahSidebar() {
         <div className="p-6 flex items-center justify-between lg:hidden" suppressHydrationWarning>
           <div className="flex items-center gap-3">
              <div className="bg-primary p-2 rounded-xl">
-               <BookOpen className="w-5 h-5 text-white" />
+               <ReadQuranIconCustom className="w-5 h-5 text-white" />
              </div>
              <h2 className="font-bold text-lg text-foreground">Menu</h2>
           </div>
@@ -146,13 +157,13 @@ export default function SurahSidebar() {
 
         {/* Tabs */}
         <div className="px-4 pb-4 space-y-4" suppressHydrationWarning>
-          <div className="bg-card rounded-2xl p-1 flex" suppressHydrationWarning>
+          <div className="bg-card/50 rounded-2xl p-1 flex border border-border/30" suppressHydrationWarning>
             <button
               onClick={() => setActiveTab('surah')}
               className={cn(
-                "flex-1 py-2.5 text-[11px] font-bold rounded-xl transition-all",
+                "flex-1 py-2 text-[11px] font-bold rounded-xl transition-all",
                 activeTab === 'surah'
-                  ? "bg-background text-foreground shadow-sm border border-border/50"
+                  ? "bg-background text-foreground shadow-md border border-border/50"
                   : "text-muted hover:text-foreground"
               )}
             >
@@ -161,9 +172,9 @@ export default function SurahSidebar() {
             <button
               onClick={() => setActiveTab('juz')}
               className={cn(
-                "flex-1 py-2.5 text-[11px] font-bold rounded-xl transition-all",
+                "flex-1 py-2 text-[11px] font-bold rounded-xl transition-all",
                 activeTab === 'juz'
-                  ? "bg-background text-foreground shadow-sm border border-border/50"
+                  ? "bg-background text-foreground shadow-md border border-border/50"
                   : "text-muted hover:text-foreground"
               )}
             >
@@ -172,9 +183,9 @@ export default function SurahSidebar() {
             <button
               onClick={() => setActiveTab('page')}
               className={cn(
-                "flex-1 py-2.5 text-[11px] font-bold rounded-xl transition-all",
+                "flex-1 py-2 text-[11px] font-bold rounded-xl transition-all",
                 activeTab === 'page'
-                  ? "bg-background text-foreground shadow-sm border border-border/50"
+                  ? "bg-background text-foreground shadow-md border border-border/50"
                   : "text-muted hover:text-foreground"
               )}
             >
@@ -187,7 +198,7 @@ export default function SurahSidebar() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="Search Surah..."
+              placeholder={`Search ${activeTab === 'surah' ? 'Surah' : activeTab === 'juz' ? 'Juz' : 'Page'}...`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-card border border-border group-focus-within:border-primary/50 rounded-xl py-3 pl-11 pr-4 text-sm text-foreground placeholder-muted outline-none transition-all"
@@ -233,33 +244,59 @@ export default function SurahSidebar() {
               </Link>
             ))
           ) : activeTab === 'juz' ? (
-            (juzList || []).map((juz) => (
-              <Link
-                key={juz.id}
-                href={`/surah/juz/${juz.id}`}
-                className={cn(
-                  "flex items-center gap-4 p-3.5 rounded-xl border border-transparent transition-all group",
-                  pathname === `/surah/juz/${juz.id}` ? "bg-primary/10 border-primary/20 shadow-sm" : "hover:bg-card hover:border-border"
-                )}
-              >
-                <div className={cn(
-                  "relative w-10 h-10 flex items-center justify-center bg-card rounded-xl transition-all duration-300",
-                  pathname === `/surah/juz/${juz.id}` ? "bg-primary text-white shadow-md" : "group-hover:bg-primary text-muted group-hover:text-white"
-                )}>
-                  <span className="font-bold text-xs">{juz.id}</span>
+            (filteredJuzList || []).map((juz) => (
+              <div key={juz.id} className="mb-6 bg-card/30 rounded-2xl border border-border/50 overflow-hidden">
+                {/* Juz Header */}
+                <div className="p-4 border-b border-border/50 flex justify-between items-start">
+                  <div>
+                    <h3 className="text-primary font-bold text-sm">Juz {juz.id}</h3>
+                    <p className="text-[11px] text-muted font-medium mt-0.5">
+                      {JUZ_DATA[juz.id]?.subtitle || "Surah Information"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-muted text-[11px] font-bold block">
+                      {JUZ_DATA[juz.id]?.count || juz.surahCount}
+                    </span>
+                    <span className="text-muted text-[11px] font-bold uppercase tracking-wider">Surah</span>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className={cn(
-                    "font-bold text-sm",
-                    pathname === `/surah/juz/${juz.id}` ? "text-primary" : "text-foreground"
-                  )}>
-                    Juz {juz.id}
-                  </h4>
-                  <p className="text-[10px] text-muted font-bold uppercase tracking-wider mt-1">
-                    Ayahs {juz.startAyah} - {juz.endAyah} • {juz.surahCount} surahs
-                  </p>
+
+                {/* Surah List in this Juz */}
+                <div className="p-2 space-y-1">
+                  {juz.uniqueSurahs?.map((surah) => {
+                    const isSurahActive = pathname === `/surah/${surah.id}`;
+                    return (
+                      <Link
+                        key={surah.id}
+                        href={`/surah/${surah.id}`}
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl transition-all group",
+                          isSurahActive ? "bg-primary/10" : "hover:bg-border/30"
+                        )}
+                      >
+                        <div className={cn(
+                          "relative w-9 h-9 flex items-center justify-center rounded-xl rotate-45 transition-all duration-300",
+                          isSurahActive ? "bg-primary text-white" : "bg-border/50 text-muted group-hover:bg-primary/20 group-hover:text-primary"
+                        )}>
+                          <span className="-rotate-45 font-bold text-[10px]">{surah.id}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className={cn(
+                            "font-bold text-xs truncate",
+                            isSurahActive ? "text-primary" : "text-foreground"
+                          )}>
+                            {surah.englishName.replace(/-/g, ' ')}
+                          </h4>
+                          <p className="text-[9px] text-muted font-medium truncate">
+                            {surah.englishNameTranslation}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </Link>
+              </div>
             ))
           ) : (
             <div className="p-8 text-center text-muted">

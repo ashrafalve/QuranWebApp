@@ -228,13 +228,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   const skipForward = useCallback(() => {
     if (currentPlaying && currentPlaying.ayahNumber < currentPlaying.totalAyahs) {
-      play(currentPlaying.globalNumber + 1, currentPlaying.surahId, currentPlaying.ayahNumber + 1, currentPlaying.totalAyahs);
+      play(currentPlaying.globalNumber + 1, currentPlaying.totalAyahs);
     }
   }, [currentPlaying, play]);
 
   const skipBack = useCallback(() => {
-    if (currentPlaying && currentPlaying.ayahNumber > 1) {
-      play(currentPlaying.globalNumber - 1, currentPlaying.surahId, currentPlaying.ayahNumber - 1, currentPlaying.totalAyahs);
+    if (currentPlaying && currentPlaying.globalNumber > 1) {
+      play(currentPlaying.globalNumber - 1, currentPlaying.totalAyahs);
     }
   }, [currentPlaying, play]);
 

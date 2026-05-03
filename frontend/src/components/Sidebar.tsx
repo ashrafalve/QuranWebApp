@@ -4,20 +4,19 @@ import { useState, useEffect } from 'react';
 import { fetchSurahs } from '@/utils/api';
 import { Surah } from '@/types';
 import Link from 'next/link';
-import { Search, Navigation, BookOpen, Bookmark, LayoutPanelLeft, Home } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { HomeIconCustom, ReadQuranIconCustom, NavigationIconCustom, BookmarkIconCustom, MoreIconCustom } from './CustomIcons';
 import { cn } from '@/utils/cn';
 import { useTheme } from '@/components/Providers';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
-const HomeIcon = Home;
-
 const menuItems = [
-  { icon: HomeIcon, href: '/', label: 'Home' },
-  { icon: BookOpen, href: '/surah', label: 'Read Quran' },
-  { icon: Navigation, href: '#', label: 'Go to Ayah', disabled: true },
-  { icon: Bookmark, href: '#', label: 'Bookmarks', disabled: true },
-  { icon: LayoutPanelLeft, href: '#', label: 'More', disabled: true },
+  { icon: HomeIconCustom, href: '/', label: 'Home' },
+  { icon: ReadQuranIconCustom, href: '/surah', label: 'Read Quran' },
+  { icon: NavigationIconCustom, href: '#', label: 'Go to Ayah', disabled: true },
+  { icon: BookmarkIconCustom, href: '#', label: 'Bookmarks', disabled: true },
+  { icon: MoreIconCustom, href: '#', label: 'More', disabled: true },
 ];
 
 export default function Sidebar() {
@@ -46,22 +45,22 @@ export default function Sidebar() {
     s.id.toString() === search
   );
 
-  // Logo: always white (grayscale + brightness-0 + invert), regardless of theme
-  const logoClass = "object-contain grayscale brightness-0 invert";
+  // Logo: white for dark theme, dark for light/sepia
+  const logoFilterClass = theme === 'dark' ? 'grayscale brightness-0 invert' : 'grayscale';
 
   return (
     <aside className="hidden lg:flex flex-col items-center py-6 w-[80px] bg-background border-r border-border z-50 transition-colors duration-300">
       {/* Top Logo */}
       <div className="mb-12 flex justify-center w-full px-2">
         <Link href="/" className="bg-primary p-2.5 rounded-xl shadow-lg shadow-primary/20 hover:scale-110 transition-transform flex items-center justify-center overflow-hidden w-12 h-12">
-          <Image 
-            src="/quranlogo.png" 
-            alt="Logo" 
-            width={32} 
-            height={32} 
-            className={logoClass}
-            priority
-          />
+<Image 
+             src="/quranlogo.png" 
+             alt="Logo" 
+             width={32} 
+             height={32} 
+             className={cn("object-contain", logoFilterClass)}
+             priority
+           />
         </Link>
       </div>
 
