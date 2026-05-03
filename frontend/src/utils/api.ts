@@ -1,11 +1,12 @@
 import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs, PaginatedSearchResult } from '@/types';
 
-// Production backend URL - can be overridden with NEXT_PUBLIC_API_URL env var
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://quran-web-app-gamma.vercel.app/api';
+// Use relative URL for deployment flexibility (works with same-domain proxy or CORS)
+// Override with NEXT_PUBLIC_API_URL for separate backend deployments
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url, {
-    cache: 'no-store', // Disable caching for now to ensure we see fresh data during debugging
+    cache: 'no-store',
   });
   if (!res.ok) {
     throw new Error(`HTTP error! status: ${res.status}`);
