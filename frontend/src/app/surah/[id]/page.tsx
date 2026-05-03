@@ -3,6 +3,8 @@ import SurahReader from '@/components/SurahReader';
 import { SurahWithAyahs } from '@/types';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }

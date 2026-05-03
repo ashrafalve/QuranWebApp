@@ -5,6 +5,8 @@ import { Search, BookOpen, Clock, Heart, LayoutGrid } from 'lucide-react';
 import Image from 'next/image';
 import HomeFooter from '@/components/HomeFooter';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const surahs: Surah[] = await fetchSurahs();
 

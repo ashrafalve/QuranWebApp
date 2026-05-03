@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import AyahCard from '@/components/AyahCard';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ id: string }>;
 }
