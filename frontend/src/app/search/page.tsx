@@ -7,6 +7,8 @@ import { PaginatedSearchResult } from '@/types';
 import Link from 'next/link';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
