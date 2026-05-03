@@ -1,4 +1,4 @@
-import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs } from '@/types';
+import { Surah, SurahWithAyahs, Ayah, Juz, JuzWithAyahs, PaginatedSearchResult } from '@/types';
 
 // Use 127.0.0.1 to avoid IPv6 resolution issues on some Windows systems
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000/api';
@@ -33,8 +33,8 @@ export const fetchJuzById = async (id: number): Promise<JuzWithAyahs> => {
   return json.data;
 };
 
-export const searchAyahs = async (q: string): Promise<{ query: string; total: number; page: number; totalPages: number; results: { ayah: Ayah; matchType: 'arabic' | 'translation' }[] }> => {
-  const json = await fetchJson<{ data: { query: string; total: number; page: number; totalPages: number; results: { ayah: Ayah; matchType: 'arabic' | 'translation' }[] } }>(`${API_URL}/search?q=${q}`);
+export const searchAyahs = async (q: string): Promise<PaginatedSearchResult> => {
+  const json = await fetchJson<{ data: PaginatedSearchResult }>(`${API_URL}/search?q=${q}`);
   return json.data;
 };
 
