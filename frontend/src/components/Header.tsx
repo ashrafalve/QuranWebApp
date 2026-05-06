@@ -61,7 +61,7 @@ export default function Header() {
   const logoFilterClass = theme === 'dark' ? 'grayscale brightness-0 invert' : 'grayscale';
 
   return (
-    <header className="h-16 border-b border-border bg-background flex items-center justify-between px-6 z-[60] transition-colors duration-300">
+    <header className="sticky top-0 h-16 border-b border-border bg-background flex items-center justify-between px-6 z-[1000] transition-colors duration-300">
       {/* Left - Logo / Brand */}
       <div className="flex items-center gap-6">
         <button
@@ -177,7 +177,7 @@ export default function Header() {
           )}
 
           {dropdownOpen && (
-            <div className="absolute top-full right-0 mt-2 w-44 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-[70] animate-in fade-in zoom-in duration-200">
+            <div className="absolute top-full right-0 mt-2 w-44 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden z-[1010] animate-in fade-in zoom-in duration-200">
               <div className="p-2 space-y-1">
                 {themes.map((t) => (
                   <button
